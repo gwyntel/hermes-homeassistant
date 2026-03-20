@@ -14,6 +14,11 @@ BACKUP_DIR ?= backups
 VENV_PATH ?= venv
 TOOLS_PATH ?= tools
 
+# SSH Configuration
+# Use id_ed25519_agent by default for container compatibility
+SSH_IDENTITY ?= ~/.ssh/id_ed25519_agent
+SSH_OPTS ?= -i $(SSH_IDENTITY) -o ConnectTimeout=5 -o BatchMode=yes
+
 # Colors for output
 GREEN = \033[0;32m
 YELLOW = \033[1;33m
@@ -43,7 +48,7 @@ help:
 # Pull configuration from Home Assistant
 pull: check-env
 	@echo "$(GREEN)Pulling configuration from Home Assistant...$(NC)"
-	@rsync -avz --delete --exclude-from=.rsync-excludes-pull $(HA_HOST):$(HA_REMOTE_PATH) $(LOCAL_CONFIG_PATH)
+	@rsync -avz --delete -e "ssh $(SSH_OPTS)" --exclude-from=.rsync-excludes-pull $(HA_HOST):$(HA_REMOTE_PATH) $(LOCAL_CONFIG_PATH)
 	@echo "$(GREEN)Configuration pulled successfully!$(NC)"
 	@echo "$(YELLOW)Running validation to ensure integrity...$(NC)"
 	@$(MAKE) validate
@@ -53,7 +58,7 @@ push: check-env
 	@echo "$(GREEN)Validating configuration before push...$(NC)"
 	@$(MAKE) validate
 	@echo "$(GREEN)Validation passed! Pushing to Home Assistant...$(NC)"
-	@rsync -avz --delete --exclude-from=.rsync-excludes-push $(LOCAL_CONFIG_PATH) $(HA_HOST):$(HA_REMOTE_PATH)
+	@rsync -avz --delete -e "ssh $(SSH_OPTS)" --exclude-from=.rsync-excludes-push $(LOCAL_CONFIG_PATH) $(HA_HOST):$(HA_REMOTE_PATH)
 	@echo "$(GREEN)Configuration pushed successfully!$(NC)"
 	@echo "$(GREEN)Reloading Home Assistant configuration...$(NC)"
 	@. $(VENV_PATH)/bin/activate && python $(TOOLS_PATH)/reload_config.py
@@ -180,12 +185,12 @@ check-env:
 		echo "$(YELLOW)Install via Homebrew: brew install rsync$(NC)"; \
 		exit 1; \
 	fi
-	@if ! ssh -o ConnectTimeout=5 -o BatchMode=yes $(HA_HOST) "exit" >/dev/null 2>&1; then \
+	@if ! ssh $(SSH_OPTS) $(HA_HOST) "exit" >/dev/null 2>&1; then \
 		echo "$(RED)Error: Unable to connect to Home Assistant via SSH ($(HA_HOST)).$(NC)"; \
-		echo "$(YELLOW)Check SSH auth, host reachability, and DNS/hostname settings.$(NC)"; \
+		echo "$(YELLOW)Check SSH auth, host reachability, and $(SSH_IDENTITY).$(NC)"; \
 		exit 1; \
 	fi
-	@if ! ssh -o ConnectTimeout=5 -o BatchMode=yes $(HA_HOST) "command -v rsync >/dev/null 2>&1"; then \
+	@if ! ssh $(SSH_OPTS) $(HA_HOST) "command -v rsync >/dev/null 2>&1"; then \
 		echo "$(RED)Error: rsync not found on Home Assistant ($(HA_HOST)).$(NC)"; \
 		echo "$(YELLOW)For Home Assistant OS, install the 'Advanced SSH & Web Terminal' addon$(NC)"; \
 		echo "$(YELLOW)and add rsync to the packages list in the addon configuration:$(NC)"; \
@@ -215,7 +220,7 @@ validate-ha: check-setup
 # SSH connectivity test
 test-ssh:
 	@echo "$(GREEN)Testing SSH connection to Home Assistant...$(NC)"
-	@ssh -o ConnectTimeout=10 $(HA_HOST) "echo 'Connection successful'" && \
+	@ssh $(SSH_OPTS) $(HA_HOST) "echo 'Connection successful'" && \
 		echo "$(GREEN)✓ SSH connection working$(NC)" || \
 		echo "$(RED)✗ SSH connection failed$(NC)"
 

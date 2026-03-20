@@ -104,17 +104,22 @@ class HAOfficialValidator:
                 if any(x in line.lower() for x in ["debug", "info:", "starting"]):
                     continue
 
+                # Filter out common build noise that isn't a configuration error
+                build_noise = [
+                    "gcc-12", "wheel", "building", "cargo", "rustc", 
+                    "compiling", "clib", "pip install", "failed to build",
+                    "legacy-install", "error: command", "exit status",
+                    "note: this error originates from a subprocess"
+                ]
+                if any(x in line.lower() for x in build_noise):
+                    continue
+
                 # Skip common non-error messages
-                if any(
-                    x in line.lower()
-                    for x in [
-                        "voluptuous",
-                        "setup of domain",
-                        "setup of platform",
-                        "loading",
-                        "initialized",
-                    ]
-                ):
+                skip_list = [
+                    "voluptuous", "setup of domain", "setup of platform", 
+                    "loading", "initialized", "successfully"
+                ]
+                if any(x in line.lower() for x in skip_list):
                     continue
 
                 # This is likely an actual error
