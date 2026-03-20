@@ -404,10 +404,10 @@ if "%SSH_CONFIGURED%"=="true" (
 )
 echo.
 echo --------------------------------------------------------
-echo TIP: Use Git Bash instead of CMD for best compatibility
+echo   🚀 Using Hermes Agent? See HERMES.md for setup!
 echo --------------------------------------------------------
 echo.
 echo Documentation: README.md
-echo Issues: https://github.com/philippb/claude-homeassistant/issues
+echo Issues: https://github.com/gwyntel/hermes-homeassistant/issues
 echo.
 pause

@@ -1,18 +1,18 @@
-# Home Assistant Configuration Management with Claude Code
+# Home Assistant Configuration Management
 
-A comprehensive system for managing Home Assistant configurations with automated validation, testing, and deployment - all enhanced by Claude Code for natural language automation creation.
+A comprehensive system for managing Home Assistant configurations with automated validation, testing, and deployment - enhanced by Hermes Agent and Claude Code for natural language automation creation.
 
 [![](https://github.com/user-attachments/assets/e4bb0179-a649-42d6-98f1-d8c29d5e84a3)](https://youtu.be/70VUzSw15-4)
 Click to play
 
 ## 🌟 Features
 
-- **🤖 AI-Powered Automation Creation**: Use Claude Code to write automations in plain English
+- **🤖 AI-Powered Automation Creation**: Use Hermes or Claude to write automations in plain English
 - **🛡️ Multi-Layer Validation**: Comprehensive validation prevents broken configurations
 - **🔄 Safe Deployments**: Pre-push validation blocks invalid configs from reaching HA
 - **🔍 Entity Discovery**: Advanced tools to explore and search available entities
-- **⚡ Automated Hooks**: Validation runs automatically on file changes
 - **📊 Entity Registry Integration**: Real-time validation against your actual HA setup
+- **🚀 Hermes Skill Support**: Fully integrated as a Hermes Agent skill
 
 ## 📦 Easy Installation (For Beginners)
 
@@ -23,11 +23,19 @@ Click to play
 Download the project and run the setup script for your operating system:
 
 #### **For Mac Users:**
-1. Download or clone this repository ([quick tutorial](https://youtu.be/q9wc7hUrW8U?si=_eT7nL8R8xXec7hL))
-2. Open Terminal and navigate to the project folder ([how to use Terminal on Mac](https://youtu.be/aj9QWELAv9o?si=jx5HexpF60q3ZxO4))
+1. Download or clone this repository
+2. Open Terminal and navigate to the project folder
 3. Run the setup script:
 ```bash
 ./setup-mac.sh
+```
+
+#### **For Linux Users:**
+1. Download or clone this repository
+2. Open Terminal and navigate to the project folder
+3. Run the setup script:
+```bash
+./setup-linux.sh
 ```
 
 #### **For Windows Users:**
@@ -47,11 +55,11 @@ setup-windows.bat
 
 ### After Setup
 1. **Configure your Home Assistant connection** (the script will show you how)
-2. **Open Claude Code** ([download here](https://claude.com/solutions/coding) if not installed) and navigate to your project folder
-3. **Pull your configuration** by typing `make pull` in Claude Code
-4. **Start creating automations** with Claude Code!
+2. **Open your Agent** (Hermes Agent or Claude Code) and navigate to your project folder
+3. **Pull your configuration** by typing `make pull` in the agent
+4. **Start creating automations** in plain English!
 
-**That's it!** The scripts handle all the technical setup for you. Claude Code makes running commands super easy - just type them directly!
+The setup scripts handle the technical foundation. If you are using Hermes Agent, see [HERMES.md](./HERMES.md) for skill-specific configuration.
 
 ---
 
