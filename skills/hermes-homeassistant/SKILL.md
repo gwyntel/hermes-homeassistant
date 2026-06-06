@@ -1,7 +1,7 @@
 ---
 name: hermes-homeassistant
 description: Home Assistant configuration management tools for Hermes Agent
-version: 1.0.0
+version: 2.0.0
 author: gwyntel
 license: Apache 2.0
 required_environment_variables:
@@ -16,7 +16,6 @@ required_environment_variables:
     help: The base URL of your Home Assistant instance.
 metadata:
   hermes:
-    # Activated when user is in the project dir
     requires_tools: [make]
 ---
 
@@ -31,51 +30,54 @@ This skill provides commands to manage your Home Assistant configuration, valida
 
 ## Commands
 
-- `ha pull`: Pull current configuration from Home Assistant via rsync.
-- `ha push`: Validate local configuration and push to Home Assistant, then reload.
-- `ha validate`: Run validation tests on local configuration files.
-- `ha backup`: Create a timestamped backup of the current local configuration.
-- `ha status`: Show configuration status and entity summary.
-- `ha entities [--domain X]`: Explore available entities in the registry.
+- `make pull`: Pull current configuration from Home Assistant via rsync + validate-client.
+- `make push`: Validate-client + push to Home Assistant + reload.
+- `make validate-client`: Run client-side validation (YAML syntax + entity refs). This is the pre-push gate.
+- `make validate`: Run full validation suite including ha_official (may produce false positives).
+- `make validate-yaml`: YAML syntax check only.
+- `make validate-references`: Entity reference check only.
+- `make backup`: Create a timestamped backup of the current local configuration.
+- `make status`: Show configuration status and entity summary.
+- `make entities [--domain X]`: Explore available entities in the registry.
+- `make reload`: Reload HA config via API without pushing.
+- `make check-env`: Verify .env configuration and SSH connectivity.
+
+## Validation Tier
+
+`make push` and `make pull` use **`validate-client`** as their gate — YAML syntax + entity reference checks only. The `ha_official_validator` is excluded because it produces false positives on many working automations. Use `make validate` for a full audit when needed.
 
 ## Usage Guide
 
 All commands should be run from the root of the project directory.
 
-### Environment Setup
-
-Ensure you have your `.env` file configured with the required variables. You can find an example in `.env.example`.
-
 ### Pulling Configuration
-Running `ha pull` will download your current HA configuration files into the `config/` directory.
 ```bash
-cd <project_dir> && . venv/bin/activate && make pull
+cd <project_dir> && make pull
 ```
 
 ### Pushing Configuration
-Running `ha push` will first validate your local changes and then upload them to your HA instance.
 ```bash
-cd <project_dir> && . venv/bin/activate && make push
+cd <project_dir> && make push
 ```
 
 ### Validating Changes
-Running `ha validate` performs multiple layers of checks (YAML syntax, entity references, and official HA validation).
 ```bash
-cd <project_dir> && . venv/bin/activate && make validate
-```
-
-### Monitoring Status
-Running `ha status` gives you a quick overview of your configuration and entity counts.
-```bash
-cd <project_dir> && . venv/bin/activate && make status
+cd <project_dir> && make validate-client   # Fast, reliable gate
+cd <project_dir> && make validate          # Full suite (may have false positives)
 ```
 
 ### Exploring Entities
-Use `ha entities` to see what entities are available in your registry.
 ```bash
-cd <project_dir> && . venv/bin/activate && python tools/entity_explorer.py
+cd <project_dir> && make entities
+cd <project_dir> && make entities ARGS='--domain climate'
+cd <project_dir> && make entities ARGS='--search motion'
 ```
-To filter by domain:
-```bash
-cd <project_dir> && . venv/bin/activate && python tools/entity_explorer.py --domain light
-```
+
+## Environment Variables
+
+Required in `.env`:
+- `HA_HOST` - SSH hostname or IP of your Home Assistant instance
+- `HA_TOKEN` - Long-lived access token from HA user profile
+- `HA_URL` - Base URL of your Home Assistant instance
+- `HA_REMOTE_PATH` - Remote config path (default: `/config/`)
+- `SSH_IDENTITY` - Path to SSH private key (default: `~/.ssh/id_ed25519_agent`)
