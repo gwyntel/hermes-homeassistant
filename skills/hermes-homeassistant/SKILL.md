@@ -1,83 +1,59 @@
 ---
 name: hermes-homeassistant
-description: Home Assistant configuration management tools for Hermes Agent
-version: 2.0.0
+description: Instance-specific Home Assistant config management for this deployment. Makefile-driven push/pull, rsync, SSH deploy, validation gate. For portable HA knowledge (automation patterns, YAML pitfalls, EVSE relay protection), load homeassistant-management instead.
+version: 2.1.0
 author: gwyntel
-license: Apache 2.0
-required_environment_variables:
-  - name: HA_HOST
-    prompt: Home Assistant SSH host (e.g., homeassistant.local)
-    help: The hostname or IP address of your Home Assistant instance for SSH access.
-  - name: HA_TOKEN
-    prompt: Home Assistant Long-Lived Access Token
-    help: Create this in your Home Assistant user profile under 'Long-lived access tokens'.
-  - name: HA_URL
-    prompt: Home Assistant URL (e.g., http://homeassistant.local:8123)
-    help: The base URL of your Home Assistant instance.
+license: Apache-2.0
 metadata:
   hermes:
-    requires_tools: [make]
+    tags: [home-assistant, deployment, rsync, validation]
+    related_skills: [homeassistant-management]
 ---
 
-# Home Assistant Skill
+# Home Assistant Instance Management
 
-This skill provides commands to manage your Home Assistant configuration, validate it, and explore entities.
+Instance-specific operational layer for this HA deployment. For portable HA knowledge (automation design patterns, YAML pitfalls, EVSE relay protection), see the `homeassistant-management` skill which is published and works for any HA setup.
 
-## Activation Triggers
+## Access
 
-- **Directory Presence**: This skill is automatically recommended when working within the `hermes-homeassistant` project directory.
-- **Explicit Invocation**: You can explicitly invoke this skill using `/skills hermes-homeassistant`.
+- **SSH**: `root@homeassistant.nebulosa-bass.ts.net` via `~/.ssh/id_ed25519_agent`
+- **HA API**: `http://192.168.86.54:8123` — token in `~/.hermes/.env` as `HASS_TOKEN`
+- **Config path on host**: `/config/`
+- **Project dir**: `/home/hermes/projects/hermes-homeassistant/`
 
 ## Commands
 
-- `make pull`: Pull current configuration from Home Assistant via rsync + validate-client.
-- `make push`: Validate-client + push to Home Assistant + reload.
-- `make validate-client`: Run client-side validation (YAML syntax + entity refs). This is the pre-push gate.
-- `make validate`: Run full validation suite including ha_official (may produce false positives).
-- `make validate-yaml`: YAML syntax check only.
-- `make validate-references`: Entity reference check only.
-- `make backup`: Create a timestamped backup of the current local configuration.
-- `make status`: Show configuration status and entity summary.
-- `make entities [--domain X]`: Explore available entities in the registry.
-- `make reload`: Reload HA config via API without pushing.
-- `make check-env`: Verify .env configuration and SSH connectivity.
+- `make pull`: Pull config from HA via rsync + validate-client
+- `make push`: Validate-client + push to HA + reload
+- `make validate-client`: YAML syntax + entity refs (the push/pull gate)
+- `make validate`: Full suite including ha_official (expect false positives)
+- `make validate-yaml`: YAML syntax only
+- `make validate-references`: Entity reference check only
+- `make backup`: Timestamped backup of local config
+- `make status`: Config status and entity summary
+- `make entities [--domain X]`: Explore entity registry
+- `make reload`: Reload HA config via API
+- `make check-env`: Verify .env + SSH connectivity
 
 ## Validation Tier
 
-`make push` and `make pull` use **`validate-client`** as their gate — YAML syntax + entity reference checks only. The `ha_official_validator` is excluded because it produces false positives on many working automations. Use `make validate` for a full audit when needed.
+`make push`/`make pull` use `validate-client` as gate. `ha_official_validator` excluded (false positives). See `homeassistant-management` skill for rationale.
 
-## Usage Guide
+## Direct SSH Alternative
 
-All commands should be run from the root of the project directory.
+For single-file edits or custom_components when `make push` is overkill:
 
-### Pulling Configuration
 ```bash
-cd <project_dir> && make pull
+scp -i ~/.ssh/id_ed25519_agent local_file root@homeassistant.nebulosa-bass.ts.net:/config/path/
 ```
 
-### Pushing Configuration
-```bash
-cd <project_dir> && make push
-```
-
-### Validating Changes
-```bash
-cd <project_dir> && make validate-client   # Fast, reliable gate
-cd <project_dir> && make validate          # Full suite (may have false positives)
-```
-
-### Exploring Entities
-```bash
-cd <project_dir> && make entities
-cd <project_dir> && make entities ARGS='--domain climate'
-cd <project_dir> && make entities ARGS='--search motion'
-```
+Then reload via API or restart HA.
 
 ## Environment Variables
 
 Required in `.env`:
-- `HA_HOST` - SSH hostname or IP of your Home Assistant instance
-- `HA_TOKEN` - Long-lived access token from HA user profile
-- `HA_URL` - Base URL of your Home Assistant instance
+- `HA_HOST` - SSH hostname
+- `HA_TOKEN` - Long-lived access token
+- `HA_URL` - Base URL
 - `HA_REMOTE_PATH` - Remote config path (default: `/config/`)
-- `SSH_IDENTITY` - Path to SSH private key (default: `~/.ssh/id_ed25519_agent`)
+- `SSH_IDENTITY` - Path to SSH key
