@@ -32,6 +32,19 @@ Manage HA config, build reliable automations, deploy custom integrations, valida
 
 Dependency: `pip install pyyaml`
 
+**Note**: `hermes skills install` currently fetches only `SKILL.md`. To get the scripts and references, clone the repo:
+```bash
+git clone https://github.com/gwyntel/homeassistant-management.git
+cd homeassistant-management
+pip install pyyaml
+python3 scripts/yaml_validator.py /path/to/ha/config/
+```
+
+Or download individual scripts directly:
+- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/yaml_validator.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/reference_validator.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/entity_explorer.py`
+
 ### Quick Validation
 
 ```bash
