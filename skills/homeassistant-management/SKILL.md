@@ -161,6 +161,10 @@ HA server-side validation (`hass --config check`) can be **stricter than the HA 
 - ✅ `automations.yaml`, `scenes.yaml`, `scripts.yaml`, `configuration.yaml`, `secrets.yaml`
 - ❌ `.storage/` — managed by HA at runtime, local changes get overwritten on next restart
 
+## HA Automation Pitfalls (Deep Dive)
+
+See `references/ha-automation-pitfalls.md` for 10 production-debugged YAML traps including unquoted time values, missing action keys, yaml.dump() append corruption, numeric state edge cases, and the `.storage/` write hazard.
+
 ## EVSE / Smart Charger Specifics
 
 See `references/evse-relay-protection.md` for a complete EVSE relay protection pattern including:
