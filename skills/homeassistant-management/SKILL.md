@@ -168,7 +168,7 @@ See `references/ha-automation-pitfalls.md` for 10 production-debugged YAML traps
 ## EVSE / Smart Charger Specifics
 
 See `references/evse-relay-protection.md` for a complete EVSE relay protection pattern including:
-- Chevy Bolt test-probe cycling behavior
-- 3-automation design (idle-disable, plug-in-enable, midnight-enable)
-- Power threshold tuning (why 100W / 15min)
+- Vehicle test-probe cycling behavior and relay wear
+- 3-automation design (idle-disable, plug-in-enable, off-peak-enable)
+- Power threshold and grace period tuning
 - Dual-switch management (charge + cloud control)
