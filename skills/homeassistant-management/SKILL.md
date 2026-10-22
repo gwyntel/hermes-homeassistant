@@ -28,22 +28,22 @@ Manage HA config, build reliable automations, deploy custom integrations, valida
 
 - **`scripts/yaml_validator.py`** — Validates YAML syntax, file encoding, HA tag handling (`!include`, `!secret`, etc.), and structure of automations/scripts/configuration files. Run: `python3 scripts/yaml_validator.py [config_dir]`
 - **`scripts/reference_validator.py`** — Validates all entity references in config files actually exist in the entity registry. Detects stale/broken references and disabled entities. Run: `python3 scripts/reference_validator.py [config_dir]`
-- **`scripts/entity_explorer.py`** — Parse entity registry and display entities organized by domain and area. Supports filtering by domain, area, and search. Run: `python3 scripts/entity_explorer.py [config_dir] [--domain X] [--area X] [--search X]`
+- **`scripts/entity_explorer.py`** — Parse entity registry and display entities organized by domain and area. Supports filtering by domain, area, and search. Run: `python3 scripts/entity_explorer.py --config [config_dir] [--domain X] [--area X] [--search X] [--full]`
 
 Dependency: `pip install pyyaml`
 
 **Note**: `hermes skills install` currently fetches only `SKILL.md`. To get the scripts and references, clone the repo:
 ```bash
-git clone https://github.com/gwyntel/homeassistant-management.git
-cd homeassistant-management
+git clone https://github.com/gwyntel/hermes-homeassistant.git
+cd hermes-homeassistant
 pip install pyyaml
 python3 scripts/yaml_validator.py /path/to/ha/config/
 ```
 
 Or download individual scripts directly:
-- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/yaml_validator.py`
-- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/reference_validator.py`
-- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/entity_explorer.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/scripts/yaml_validator.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/scripts/reference_validator.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/scripts/entity_explorer.py`
 
 ### Quick Validation
 

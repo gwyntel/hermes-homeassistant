@@ -42,7 +42,12 @@ From this cloned repository, after reviewing its configuration:
 If needed, use the configured host and identity, not another operator's private host/key:
 
 ```bash
-scp -i "$SSH_IDENTITY" local_file "$HA_HOST:$HA_REMOTE_PATH/path/"
+set -a
+. ./.env
+set +a
+SSH_OPTS=()
+if [ -n "${SSH_IDENTITY:-}" ]; then SSH_OPTS=(-i "$SSH_IDENTITY"); fi
+scp "${SSH_OPTS[@]}" local_file "$HA_HOST:$HA_REMOTE_PATH/path/"
 ```
 
 Review the exact destination and obtain authorization before writing. Then reload through the HA UI/API only when explicitly authorized.
