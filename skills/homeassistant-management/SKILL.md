@@ -13,7 +13,7 @@ metadata:
 
 # Home Assistant Management
 
-Manage HA config, build reliable automations, deploy custom integrations, validate YAML, and avoid common pitfalls. Bundles working validators you can run immediately after install.
+Manage HA config, build reliable automations, deploy custom integrations, validate YAML, and avoid common pitfalls. Bundles working validators you can run immediately after install. Home Assistant is the target-system dependency; the executing agent can be Hermes, Claude Code, Codex, or another agent. Use its native shell and HA integration/API capabilities rather than assuming Hermes tool names.
 
 ## When to Use
 
@@ -139,7 +139,7 @@ action:
 
 Format: `domain.location_room_device_sensor`
 
-When creating automations, discover entities first via `ha_list_entities` or the entity explorer script. Never assume entity IDs — verify them.
+When creating automations, discover entities first using the available Home Assistant integration/tool, HA UI, REST API, or entity explorer script. `ha_list_entities` is a Hermes-specific tool name, not a required capability. Never assume entity IDs — verify them.
 
 ## Validation Strategies
 
