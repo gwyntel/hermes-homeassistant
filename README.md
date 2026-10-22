@@ -168,6 +168,46 @@ export PATH="/opt/homebrew/bin:$PATH"
 make setup
 ```
 
+## Agent Skill installation (Vercel Skills CLI)
+
+This repository publishes two Agent Skills under `skills/`:
+
+- **`hermes-homeassistant`** — deployment instructions tied to GwynTel's HA instance and this repository's Makefile. Install only if you operate that deployment.
+- **`homeassistant-management`** — portable HA guidance and bundled validators for general Home Assistant work.
+
+Install either skill (or both) with [Vercel's Skills CLI](https://github.com/vercel-labs/skills):
+
+```bash
+npx skills add gwyntel/hermes-homeassistant --skill homeassistant-management --agent hermes-agent -g -y
+# Or, for the deployment-specific skill:
+npx skills add gwyntel/hermes-homeassistant --skill hermes-homeassistant --agent hermes-agent -g -y
+# Install both by running both commands above.
+```
+
+For another supported agent, substitute its identifier for `hermes-agent`; omit `-g` to install into the current project rather than the user-level global scope. List discovered skills with `npx skills add gwyntel/hermes-homeassistant --list`.
+
+After installing, invoke the relevant skill in your agent when working on HA configuration. The portable skill's validator scripts and references are included in the installation; run them from the installed skill directory. The deployment-specific skill documents this repository's Makefile workflow; clone this repository and configure `.env` before using `make pull`, `make push`, or any command that contacts your HA instance. Review the target host and configuration before any deployment.
+
+### Updating
+
+```bash
+npx skills update homeassistant-management -g -y
+npx skills update hermes-homeassistant -g -y
+```
+
+Use the same scope (`-g` for global or `-p` for project) used during installation. To refresh from a local clone, pull changes then rerun `npx skills add <local-repo-path> --skill <skill-name> --agent hermes-agent -g -y`. `hermes skills install` is a separate Hermes-native command, not part of Vercel's CLI.
+
+### Skills CLI troubleshooting
+
+- If a skill is not listed, verify its exact name with `npx skills add gwyntel/hermes-homeassistant --list` and specify it with `--skill`.
+- If frontmatter validation fails, check that `skills/<name>/SKILL.md` starts with valid YAML containing matching lowercase-hyphenated `name` and a non-empty `description`.
+- If installation targets the wrong place, select the intended agent with `--agent` and scope (`-g` global or omit it for project install).
+- If the CLI cannot write the destination, check permissions for the selected agent's skill directory or use a writable project scope.
+
+## Provenance and license
+
+This project is a fork of [philippb/claude-homeassistant](https://github.com/philippb/claude-homeassistant). The repository and both skills retain their existing Apache-2.0 licensing; see [LICENSE](LICENSE).
+
 ## License
 
 Apache 2.0
