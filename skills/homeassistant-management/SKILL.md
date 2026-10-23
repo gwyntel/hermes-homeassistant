@@ -13,7 +13,7 @@ metadata:
 
 # Home Assistant Management
 
-Manage HA config, build reliable automations, deploy custom integrations, validate YAML, and avoid common pitfalls. Bundles working validators you can run immediately after install.
+Manage HA config, build reliable automations, deploy custom integrations, validate YAML, and avoid common pitfalls. Bundles working validators you can run immediately after install. Home Assistant is the target-system dependency; the executing agent can be Hermes, Claude Code, Codex, or another agent. Use its native shell and HA integration/API capabilities rather than assuming Hermes tool names.
 
 ## When to Use
 
@@ -28,34 +28,36 @@ Manage HA config, build reliable automations, deploy custom integrations, valida
 
 - **`scripts/yaml_validator.py`** — Validates YAML syntax, file encoding, HA tag handling (`!include`, `!secret`, etc.), and structure of automations/scripts/configuration files. Run: `python3 scripts/yaml_validator.py [config_dir]`
 - **`scripts/reference_validator.py`** — Validates all entity references in config files actually exist in the entity registry. Detects stale/broken references and disabled entities. Run: `python3 scripts/reference_validator.py [config_dir]`
-- **`scripts/entity_explorer.py`** — Parse entity registry and display entities organized by domain and area. Supports filtering by domain, area, and search. Run: `python3 scripts/entity_explorer.py [config_dir] [--domain X] [--area X] [--search X]`
+- **`scripts/entity_explorer.py`** — Parse entity registry and display entities organized by domain and area. Supports filtering by domain, area, and search. Run: `python3 scripts/entity_explorer.py --config [config_dir] [--domain X] [--area X] [--search X] [--full]`
 
 Dependency: `pip install pyyaml`
 
 **Note**: `hermes skills install` currently fetches only `SKILL.md`. To get the scripts and references, clone the repo:
 ```bash
-git clone https://github.com/gwyntel/homeassistant-management.git
-cd homeassistant-management
-pip install pyyaml
-python3 scripts/yaml_validator.py /path/to/ha/config/
+git clone https://github.com/gwyntel/hermes-homeassistant.git
+cd hermes-homeassistant/skills/homeassistant-management
+python3 -m pip install pyyaml
+python3 scripts/yaml_validator.py /absolute/path/to/ha/config/
 ```
 
 Or download individual scripts directly:
-- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/yaml_validator.py`
-- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/reference_validator.py`
-- `curl -O https://raw.githubusercontent.com/gwyntel/homeassistant-management/main/scripts/entity_explorer.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/skills/homeassistant-management/scripts/yaml_validator.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/skills/homeassistant-management/scripts/reference_validator.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/skills/homeassistant-management/scripts/entity_explorer.py`
 
 ### Quick Validation
 
+Replace `/path/to/ha/config/` with the absolute path to your actual Home Assistant configuration; that config directory is not bundled with the skill. Run the scripts from this installed skill directory.
+
 ```bash
 # YAML syntax check (fast, no HA required)
-python3 scripts/yaml_validator.py config/
+python3 scripts/yaml_validator.py /path/to/ha/config/
 
 # Entity reference check (needs .storage/core.entity_registry)
-python3 scripts/reference_validator.py config/
+python3 scripts/reference_validator.py /path/to/ha/config/
 
 # Both (client-side gate — recommended before any push)
-python3 scripts/yaml_validator.py config/ && python3 scripts/reference_validator.py config/
+python3 scripts/yaml_validator.py /path/to/ha/config/ && python3 scripts/reference_validator.py /path/to/ha/config/
 ```
 
 ## HA REST API Quick Reference
@@ -139,7 +141,7 @@ action:
 
 Format: `domain.location_room_device_sensor`
 
-When creating automations, discover entities first via `ha_list_entities` or the entity explorer script. Never assume entity IDs — verify them.
+When creating automations, discover entities first using the available Home Assistant integration/tool, HA UI, REST API, or entity explorer script. `ha_list_entities` is a Hermes-specific tool name, not a required capability. Never assume entity IDs — verify them.
 
 ## Validation Strategies
 
