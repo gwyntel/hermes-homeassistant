@@ -20,7 +20,7 @@ Set values in the repository's ignored `.env` using `.env.example`: `HA_HOST`, `
 
 ## Commands
 
-From this cloned repository, after reviewing its configuration:
+From this cloned repository, after reviewing its configuration (copy `.env.example` to `.env` and load it for direct shell commands):
 
 - `make pull`: Pull config via rsync + validate-client
 - `make push`: Validate-client + push to HA + reload (writes to target)
@@ -47,6 +47,8 @@ set -a
 set +a
 SSH_OPTS=()
 if [ -n "${SSH_IDENTITY:-}" ]; then SSH_OPTS=(-i "$SSH_IDENTITY"); fi
+: "${HA_HOST:?Set HA_HOST in .env}"
+: "${HA_REMOTE_PATH:?Set HA_REMOTE_PATH in .env}"
 scp "${SSH_OPTS[@]}" local_file "$HA_HOST:$HA_REMOTE_PATH/path/"
 ```
 
