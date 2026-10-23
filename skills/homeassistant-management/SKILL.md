@@ -35,27 +35,29 @@ Dependency: `pip install pyyaml`
 **Note**: `hermes skills install` currently fetches only `SKILL.md`. To get the scripts and references, clone the repo:
 ```bash
 git clone https://github.com/gwyntel/hermes-homeassistant.git
-cd hermes-homeassistant
-pip install pyyaml
-python3 scripts/yaml_validator.py /path/to/ha/config/
+cd hermes-homeassistant/skills/homeassistant-management
+python3 -m pip install pyyaml
+python3 scripts/yaml_validator.py /absolute/path/to/ha/config/
 ```
 
 Or download individual scripts directly:
-- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/scripts/yaml_validator.py`
-- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/scripts/reference_validator.py`
-- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/scripts/entity_explorer.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/skills/homeassistant-management/scripts/yaml_validator.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/skills/homeassistant-management/scripts/reference_validator.py`
+- `curl -O https://raw.githubusercontent.com/gwyntel/hermes-homeassistant/main/skills/homeassistant-management/scripts/entity_explorer.py`
 
 ### Quick Validation
 
+Replace `/path/to/ha/config/` with the absolute path to your actual Home Assistant configuration; that config directory is not bundled with the skill. Run the scripts from this installed skill directory.
+
 ```bash
 # YAML syntax check (fast, no HA required)
-python3 scripts/yaml_validator.py config/
+python3 scripts/yaml_validator.py /path/to/ha/config/
 
 # Entity reference check (needs .storage/core.entity_registry)
-python3 scripts/reference_validator.py config/
+python3 scripts/reference_validator.py /path/to/ha/config/
 
 # Both (client-side gate — recommended before any push)
-python3 scripts/yaml_validator.py config/ && python3 scripts/reference_validator.py config/
+python3 scripts/yaml_validator.py /path/to/ha/config/ && python3 scripts/reference_validator.py /path/to/ha/config/
 ```
 
 ## HA REST API Quick Reference
